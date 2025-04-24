@@ -1,23 +1,18 @@
 package com.nibin.quiz.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Users {
 
     @Id
-
     private int id;
+
     private String username;
     private String password;
 
-    public Users(int id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-    }
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public int getId() {
         return id;
@@ -41,5 +36,33 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Users(int id, String username, String password, Role role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
+    public Users() {
+    }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                '}';
     }
 }

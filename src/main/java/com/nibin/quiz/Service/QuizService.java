@@ -3,6 +3,7 @@ package com.nibin.quiz.Service;
 
 import com.nibin.quiz.Model.Question;
 import com.nibin.quiz.Repository.QuizRepo;
+import com.nibin.quiz.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,10 @@ public class QuizService {
     @Autowired
     QuizRepo repo;
 
+
     public List<Question> getallQuestions() {
         return repo.findAll();
+
     }
 
     public Question addQuestion(Question question) {
