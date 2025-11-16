@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuizService {
@@ -28,5 +29,10 @@ public class QuizService {
     public void delete(int id)
     {
         repo.deleteById(id);
+    }
+
+    public List<Question> addManyQuestion(List<Question> questions) {
+        List<Question> questions1 = repo.saveAll(questions);
+        return questions1;
     }
 }

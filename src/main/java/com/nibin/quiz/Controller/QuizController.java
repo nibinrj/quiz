@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@RestController("/v1")
+@RestController
+@RequestMapping("/v1")
 public class QuizController {
 
     @Autowired
@@ -31,6 +33,11 @@ public class QuizController {
         System.out.println("-----------------------------------------------------------------------------------");
         return new ResponseEntity<Question>(service.addQuestion(question),HttpStatus.OK);
 
+    }
+
+    @PostMapping("/admin/addMany")
+    public ResponseEntity<List<Question>> addManyQuestion(@RequestBody List<Question> questions){
+        return new ResponseEntity<List<Question>>(service.addManyQuestion(questions),HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/delete/{id}")
