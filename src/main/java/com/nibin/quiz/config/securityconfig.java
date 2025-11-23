@@ -32,18 +32,18 @@ public class securityconfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login","/register").permitAll()
-                        .requestMatchers("/admin/**","/student/**").hasRole("ADMIN")
-                        .requestMatchers("/student/**").hasRole("STUDENT")
-
+                        .requestMatchers("/login", "/register").permitAll()
+                        // Allow ADMINs to access admin pages
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Allow BOTH Students AND Admins to access student pages
+                        .requestMatchers("/student/**").hasAnyRole("STUDENT", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
-                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

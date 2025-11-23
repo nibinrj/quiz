@@ -36,6 +36,7 @@ public class UserService {
     public String verify(Users user)
     {
         Authentication authentication =  authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
+        System.out.println("???00");
         if(authentication.isAuthenticated())
         {
             System.out.println("--------------------------------verify---------------------------");

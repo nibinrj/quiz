@@ -13,19 +13,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping
 public class QuizController {
 
     @Autowired
     private QuizService service;
 
-    @GetMapping("/student/getall")
+    @GetMapping("/questions")
     public ResponseEntity<List<Question>> getallQuestion()
     {
         return new ResponseEntity<List<Question>>(service.getallQuestions(),HttpStatus.OK);
     }
 
-    @PostMapping("/admin/add")
+    @PostMapping("/question/add")
     public ResponseEntity<Question> addQuestion(@RequestBody Question question)
     {
         System.out.println("-----------------------------------------------------------------------------------");
@@ -35,12 +35,12 @@ public class QuizController {
 
     }
 
-    @PostMapping("/admin/addMany")
+    @PostMapping("/question/addMany")
     public ResponseEntity<List<Question>> addManyQuestion(@RequestBody List<Question> questions){
         return new ResponseEntity<List<Question>>(service.addManyQuestion(questions),HttpStatus.OK);
     }
 
-    @DeleteMapping("/admin/delete/{id}")
+    @DeleteMapping("/question/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable int id)
     {
         service.delete(id);

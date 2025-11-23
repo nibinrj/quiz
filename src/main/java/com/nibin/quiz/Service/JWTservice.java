@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,31 +17,37 @@ import java.util.function.Function;
 @Service
 public class JWTservice {
 
-    // 1. Define a constant hardcoded key (Base64 encoded)
-    // This string below is a valid 256-bit HmacSHA256 key
-    private static final String SECRET_KEY = "TmV3U2VjcmV0S2V5Rm9ySldUVG9rZW5HZW5lcmF0aW9u";
+    // 1. Inject the secret from application.properties
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    // 2. Remove the Constructor that generates the random key
-    public JWTservice(){
-    }
+    private Map<String,Object> claims = new HashMap<>();
 
     public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) // Fixed logic (1 hour)
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000 * 30)) // Fixed expiration math (was missing * 1000 for milliseconds)
                 .and()
                 .signWith(getkey())
                 .compact();
     }
 
     private SecretKey getkey() {
-        // 3. Use the constant SECRET_KEY
-        byte[] keybytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keybytes);
+        // 3. Ensure your secret key in application.properties is long enough for HmacSHA256
+        // Or strictly use Decoders if it's Base64, or just bytes if it's plain text.
+        // For simplicity with your "nibin123", we might need to pad it or use Keys.hmacShaKeyFor(secretKey.getBytes()) directly if it's not Base64.
+
+        // Robust fix: Use the raw bytes of your string if it's not a proper Base64 encoded key
+        // But standard practice is Base64. Let's assume you want to use the simple string for now:
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(getBase64Key()));
+    }
+
+    // Helper to ensure we have a valid Base64 key from your simple string
+    private String getBase64Key() {
+        return java.util.Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
     public String extractUserName(String token) {

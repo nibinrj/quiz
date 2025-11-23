@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
+@RequestMapping
 public class Usercontroller {
 
     @Autowired
@@ -19,7 +21,7 @@ public class Usercontroller {
     @PostMapping("/login")
     public String login(@RequestBody Users user)
     {
-        System.out.println(user.toString());
+        //System.out.println(user.toString());
         return service.verify(user);
     }
 

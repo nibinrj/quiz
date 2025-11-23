@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 public class Users {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ADDED THIS LINE
     private int id;
 
     private String username;
