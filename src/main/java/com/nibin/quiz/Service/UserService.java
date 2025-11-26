@@ -1,6 +1,9 @@
 package com.nibin.quiz.Service;
 
 
+import com.nibin.quiz.UserDTO.RegisterRequestDTO;
+import com.nibin.quiz.UserDTO.RegisterResponseDTO;
+import com.nibin.quiz.Model.Role;
 import com.nibin.quiz.Model.Users;
 import com.nibin.quiz.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +28,19 @@ public class UserService {
 
     private BCryptPasswordEncoder crypt =  new BCryptPasswordEncoder(12);
 
-    public Users register(Users users )
+    public RegisterResponseDTO register(RegisterRequestDTO userDTO )
     {
-        users.setPassword(crypt.encode(users.getPassword()));
-        repo.save(users);
-        return users;
+        Users user = new Users();
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(crypt.encode(userDTO.getPassword()));
+        user.setRole(Role.STUDENT);
+
+        repo.save(user);
+
+        RegisterResponseDTO response = new RegisterResponseDTO();
+        response.setName(user.getUsername());
+        response.setRole(user.getRole());
+        return response;
 
     }
 

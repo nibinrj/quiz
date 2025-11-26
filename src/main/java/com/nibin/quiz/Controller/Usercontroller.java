@@ -1,6 +1,8 @@
 package com.nibin.quiz.Controller;
 
 
+import com.nibin.quiz.UserDTO.RegisterRequestDTO;
+import com.nibin.quiz.UserDTO.RegisterResponseDTO;
 import com.nibin.quiz.Model.Users;
 
 import com.nibin.quiz.Service.UserService;
@@ -25,7 +27,7 @@ public class Usercontroller {
     }
 
     @PostMapping("/register")
-    public Users register(@RequestBody Users users) {
-        return service.register(users);
+    public RegisterResponseDTO register(@RequestBody RegisterRequestDTO user) {
+        return service.register(user);
     }
 }
