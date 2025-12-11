@@ -1,9 +1,9 @@
-# [Project Name] - Enterprise Quiz System
+# Quiz System
 
 A cloud-native backend system built with **Spring Boot** and **AWS**, designed for high security and scalability.
 
 ## 🏗 Architecture
-Unlike standard tutorials, this project implements a **Private VPC Network** strategy to secure user data. The database is isolated in a private subnet, inaccessible from the public internet, accessed only via a secure VPC Connector.
+This project implements a **Private VPC Network** strategy to secure user data. The database is isolated in a private subnet, inaccessible from the public internet, accessed only via a secure VPC Connector.
 
 ![Architecture Diagram](quiz-test.drawio.png)
 
