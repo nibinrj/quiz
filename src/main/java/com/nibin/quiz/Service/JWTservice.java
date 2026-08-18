@@ -19,7 +19,7 @@ public class JWTservice {
 
     // 1. Inject the secret from application.properties
     @Value("${jwt.secret}")
-    private String secretKey;
+    private SecretKey secretKey;
 
     private Map<String,Object> claims = new HashMap<>();
 
@@ -36,19 +36,11 @@ public class JWTservice {
     }
 
     private SecretKey getkey() {
-        // 3. Ensure your secret key in application.properties is long enough for HmacSHA256
-        // Or strictly use Decoders if it's Base64, or just bytes if it's plain text.
-        // For simplicity with your "nibin123", we might need to pad it or use Keys.hmacShaKeyFor(secretKey.getBytes()) directly if it's not Base64.
-
-        // Robust fix: Use the raw bytes of your string if it's not a proper Base64 encoded key
-        // But standard practice is Base64. Let's assume you want to use the simple string for now:
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(getBase64Key()));
+        return secretKey;
     }
 
     // Helper to ensure we have a valid Base64 key from your simple string
-    private String getBase64Key() {
-        return java.util.Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
+
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);

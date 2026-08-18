@@ -1,4 +1,4 @@
-package com.nibin.quiz.UserDTO;
+package com.nibin.quiz.DTO;
 
 
 import com.nibin.quiz.Model.Role;

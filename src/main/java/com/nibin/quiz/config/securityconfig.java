@@ -1,6 +1,5 @@
 package com.nibin.quiz.config;
 
-
 import com.nibin.quiz.Service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -33,12 +31,11 @@ public class securityconfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults()) // <--- ADD THIS LINE (Enables CORS)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/register").permitAll()
-                        // Allow ADMINs to access admin pages
+                        .requestMatchers("/login", "/register").permitAll() // <--- OPTIONAL: Add "/questions" here if you want it Public
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        // Allow BOTH Students AND Admins to access student pages
-                        .requestMatchers("/student/**").hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers("/student/**","/questions").hasAnyRole("STUDENT", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
@@ -49,8 +46,7 @@ public class securityconfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider()
-    {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder());
         provider.setUserDetailsService(myUserDetailsService);
@@ -58,15 +54,12 @@ public class securityconfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder()
-    {
-        BCryptPasswordEncoder crypt = new BCryptPasswordEncoder(12);
-        return crypt;
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
 }

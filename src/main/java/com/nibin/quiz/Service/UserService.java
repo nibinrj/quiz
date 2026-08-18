@@ -1,8 +1,8 @@
 package com.nibin.quiz.Service;
 
 
-import com.nibin.quiz.UserDTO.RegisterRequestDTO;
-import com.nibin.quiz.UserDTO.RegisterResponseDTO;
+import com.nibin.quiz.DTO.RegisterRequestDTO;
+import com.nibin.quiz.DTO.RegisterResponseDTO;
 import com.nibin.quiz.Model.Role;
 import com.nibin.quiz.Model.Users;
 import com.nibin.quiz.Repository.UserRepo;
