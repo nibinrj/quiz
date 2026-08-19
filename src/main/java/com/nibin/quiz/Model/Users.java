@@ -17,12 +17,7 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
+   
     private Set<Category> subscribedCategories;
 
     public int getId() {

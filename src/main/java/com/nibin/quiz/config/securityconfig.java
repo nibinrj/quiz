@@ -4,6 +4,7 @@ import com.nibin.quiz.Service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,9 +34,11 @@ public class securityconfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults()) // <--- ADD THIS LINE (Enables CORS)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/register").permitAll() // <--- OPTIONAL: Add "/questions" here if you want it Public
+                        .requestMatchers("/login", "/register").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/student/**","/questions").hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/question/add", "/question/addMany").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/question/delete/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers("/student/**", "/questions").hasAnyRole("STUDENT", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

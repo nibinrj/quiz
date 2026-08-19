@@ -1,53 +1,23 @@
 package com.nibin.quiz.Model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
+@Table(name = "category_subscriptions",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "category_id"}))
 public class CategorySubscriptions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
-    @ManyToMany
-    @JoinColumn(referencedColumnName = "Id")
-    private Users studentId;
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = false)
+    private Users student;
 
-    @ManyToMany
-    @JoinColumn(referencedColumnName = "Id")
-    private Category categoryId;
-
-    public CategorySubscriptions(int id, Users studentId, Category categoryId) {
-        this.id = id;
-        this.studentId = studentId;
-        this.categoryId = categoryId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public CategorySubscriptions() {
-    }
-
-    public Users getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Users studentId) {
-        this.studentId = studentId;
-    }
-
-    public Category getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Category categoryId) {
-        this.categoryId = categoryId;
-    }
-
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 }
