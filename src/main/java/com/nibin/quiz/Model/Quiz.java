@@ -23,9 +23,13 @@ public class Quiz {
     private LocalDateTime scheduledStartTime; // For cloud scheduling features
 
     // Link Quiz to a Category (e.g., This is a "Physics" quiz)
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @ManyToMany
+    @JoinTable(
+            name = "quiz_category",
+            joinColumns = @JoinColumn(name = "quiz_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
 
 
 
