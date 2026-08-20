@@ -1,6 +1,7 @@
 package com.nibin.quiz.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 
@@ -20,6 +21,11 @@ public class Question {
     @Column(name = "option_text")
     private List<String> options;
     private String answer;
+
+    @ManyToOne
+    @JoinColumn(name = "quiz_id")
+    @JsonIgnore // Prevent infinite recursion when converting to JSON
+    private Quiz quiz;
 
 
     public int getId() {

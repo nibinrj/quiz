@@ -23,11 +23,13 @@ public class QuizService {
     }
 
     public Question addQuestion(Question question) {
+
         return repo.save(question);
     }
 
     public void delete(int id)
     {
+
         repo.deleteById(id);
     }
 
