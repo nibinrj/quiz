@@ -2,12 +2,14 @@ package com.nibin.quiz.Model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // ADDED THIS LINE
-    private int id;
+    private int Id;
 
     private String username;
     private String password;
@@ -15,12 +17,21 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_subscriptions", // Name of the bridging table in the database
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> subscribedCategories;
+
     public int getId() {
-        return id;
+        return Id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.Id = id;
     }
 
     public String getUsername() {
@@ -48,7 +59,7 @@ public class Users {
     }
 
     public Users(int id, String username, String password, Role role) {
-        this.id = id;
+        this.Id = id;
         this.username = username;
         this.password = password;
         this.role = role;
@@ -60,10 +71,18 @@ public class Users {
     @Override
     public String toString() {
         return "Users{" +
-                "id=" + id +
+                "id=" + Id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
                 '}';
+    }
+
+    public Set<Category> getSubscribedCategories() {
+        return subscribedCategories;
+    }
+
+    public void setSubscribedCategories(Set<Category> subscribedCategories) {
+        this.subscribedCategories = subscribedCategories;
     }
 }

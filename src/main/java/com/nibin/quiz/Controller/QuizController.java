@@ -1,55 +1,51 @@
 package com.nibin.quiz.Controller;
 
-
 import com.nibin.quiz.Model.Question;
 import com.nibin.quiz.Service.QuizService;
+import lombok.extern.slf4j.Slf4j; // 1. Import this
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping
+@CrossOrigin
+@Slf4j // 2. Add this annotation. It creates a 'log' object for you.
 public class QuizController {
 
     @Autowired
     private QuizService service;
 
     @GetMapping("/questions")
-    public ResponseEntity<List<Question>> getallQuestion()
-    {
-        return new ResponseEntity<List<Question>>(service.getallQuestions(),HttpStatus.OK);
+    public ResponseEntity<List<Question>> getallQuestion() {
+        log.info("Request received to fetch all questions"); // Info level
+
+        return new ResponseEntity<>(service.getallQuestions(), HttpStatus.OK);
     }
 
     @PostMapping("/question/add")
-    public ResponseEntity<Question> addQuestion(@RequestBody Question question)
-    {
-        System.out.println("-----------------------------------------------------------------------------------");
-        System.out.println(question.toString());
-        System.out.println("-----------------------------------------------------------------------------------");
-        return new ResponseEntity<Question>(service.addQuestion(question),HttpStatus.OK);
+    public ResponseEntity<Question> addQuestion(@RequestBody Question question) {
+        log.info("Request to add new question: {}", question.getQuestion_text());
 
+        Question savedQuestion = service.addQuestion(question);
+
+        log.debug("Full question object saved: {}", savedQuestion); // Debug level (detailed)
+        return new ResponseEntity<>(savedQuestion, HttpStatus.OK);
     }
 
     @PostMapping("/question/addMany")
-    public ResponseEntity<List<Question>> addManyQuestion(@RequestBody List<Question> questions){
-        return new ResponseEntity<List<Question>>(service.addManyQuestion(questions),HttpStatus.OK);
+    public ResponseEntity<List<Question>> addManyQuestion(@RequestBody List<Question> questions) {
+        log.info("Received request to bulk add {} questions", questions.size());
+        return new ResponseEntity<>(service.addManyQuestion(questions), HttpStatus.OK);
     }
 
     @DeleteMapping("/question/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable int id)
-    {
+    public ResponseEntity<?> delete(@PathVariable int id) {
+        log.warn("Request received to DELETE question with ID: {}", id); // Warn level
         service.delete(id);
         return ResponseEntity.ok("Question deleted");
     }
-
-
-
-
-
-
 }

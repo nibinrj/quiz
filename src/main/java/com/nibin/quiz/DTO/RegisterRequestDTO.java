@@ -1,4 +1,4 @@
-package com.nibin.quiz.UserDTO;
+package com.nibin.quiz.DTO;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
