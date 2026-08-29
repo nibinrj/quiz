@@ -19,4 +19,4 @@ This project implements a **Private VPC Network** strategy to secure user data. 
 * **Spring Security & JWT** (Stateless Auth)
 * **Docker** (Containerization)
 * **GitHub Actions** (CI/CD Pipeline)
-* **Terraform** (Infrastructure as Code - Optional if you add this later)
+* **Terraform** 
