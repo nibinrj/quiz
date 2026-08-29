@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestController("/questin")
 @RequestMapping
 @CrossOrigin
 @Slf4j // 2. Add this annotation. It creates a 'log' object for you.
@@ -19,14 +19,14 @@ public class QuizController {
     @Autowired
     private QuizService service;
 
-    @GetMapping("/questions")
+    @GetMapping()
     public ResponseEntity<List<Question>> getallQuestion() {
         log.info("Request received to fetch all questions"); // Info level
 
         return new ResponseEntity<>(service.getallQuestions(), HttpStatus.OK);
     }
 
-    @PostMapping("/question/add")
+    @PostMapping("/add")
     public ResponseEntity<Question> addQuestion(@RequestBody Question question) {
         log.info("Request to add new question: {}", question.getQuestion_text());
 
@@ -36,13 +36,13 @@ public class QuizController {
         return new ResponseEntity<>(savedQuestion, HttpStatus.OK);
     }
 
-    @PostMapping("/question/addMany")
+    @PostMapping("/addMany")
     public ResponseEntity<List<Question>> addManyQuestion(@RequestBody List<Question> questions) {
         log.info("Received request to bulk add {} questions", questions.size());
         return new ResponseEntity<>(service.addManyQuestion(questions), HttpStatus.OK);
     }
 
-    @DeleteMapping("/question/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {
         log.warn("Request received to DELETE question with ID: {}", id); // Warn level
         service.delete(id);

@@ -1,6 +1,7 @@
 package com.nibin.quiz.config;
 
 import com.nibin.quiz.Service.MyUserDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +35,7 @@ public class securityconfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults()) // <--- ADD THIS LINE (Enables CORS)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers("/login", "/register","/error").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/question/add", "/question/addMany").hasAnyRole("ADMIN", "STAFF")
                         .requestMatchers(HttpMethod.DELETE, "/question/delete/**").hasAnyRole("ADMIN", "STAFF")
@@ -55,6 +56,7 @@ public class securityconfig {
         provider.setUserDetailsService(myUserDetailsService);
         return provider;
     }
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
