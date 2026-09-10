@@ -60,6 +60,14 @@ public class Question {
         this.answer = answer;
     }
 
+    public Quiz getQuiz() {
+        return quiz;
+    }
+
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
+    }
+
     public Question(int id, String question_text, List<String> options, String answer) {
         this.id = id;
         this.question_text = question_text;
