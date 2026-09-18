@@ -1,0 +1,22 @@
+# Integration-test profile.
+#
+# The datasource points at the shared Testcontainers PostgreSQL and is injected by
+# AbstractPostgresIT via @DynamicPropertySource. Everything else deliberately mirrors
+# src/main/resources/application.yaml: in particular ddl-auto is `update`, the same way
+# the schema is built in production. There is no separate test schema.
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        generate_statistics: true
+
+jwt:
+  secret: integration-test-secret-that-is-long-enough-for-hs256
+
+logging:
+  level:
+    root: WARN
+    com.nibin.quiz: INFO
+    org.hibernate.SQL: WARN

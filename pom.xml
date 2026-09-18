@@ -28,6 +28,10 @@
 	</scm>
 	<properties>
 		<java.version>23</java.version>
+		<!-- Spring Boot 3.3.7 manages Testcontainers 1.19.8, whose docker-java 3.3.x
+		     negotiates a Docker API version that Engine 29.x rejects with HTTP 400 on
+		     /info. Pinned forward so the ITs work against current Docker. -->
+		<testcontainers.version>1.21.3</testcontainers.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -100,6 +104,25 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Integration tests against a real PostgreSQL via Testcontainers -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -138,6 +161,24 @@
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
+			</plugin>
+			<!-- Runs the *IT integration tests during `mvn verify`. One forked JVM for all
+			     of them, so the Testcontainers singleton is shared rather than restarted. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<configuration>
+					<forkCount>1</forkCount>
+					<reuseForks>true</reuseForks>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
