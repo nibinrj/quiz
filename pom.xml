@@ -28,10 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>23</java.version>
-		<!-- Spring Boot 3.3.7 manages Testcontainers 1.19.8, whose docker-java 3.3.x
-		     negotiates a Docker API version that Engine 29.x rejects with HTTP 400 on
-		     /info. Pinned forward so the ITs work against current Docker. -->
-		<testcontainers.version>1.21.3</testcontainers.version>
+		<!-- Spring Boot 3.3.7 manages Testcontainers 1.19.8 (docker-java 3.3.x), which
+		     predates Docker Engine 29's raised minimum API version. Pinned forward. -->
+		<testcontainers.version>1.21.4</testcontainers.version>
 	</properties>
 	<dependencies>
 		<dependency>

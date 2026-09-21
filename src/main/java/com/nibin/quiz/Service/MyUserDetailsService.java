@@ -25,11 +25,11 @@ public class MyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Find the user from the repository
         Users user = repo.findByusername(username);  // Assuming 'findByUsername' is the correct method name
-        System.out.println(user.toString());
         // Handle case where user is not found
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
+        System.out.println(user.toString());
 
         // Return the custom UserPrincipal object with user details
         return new UserPrincipal(user);

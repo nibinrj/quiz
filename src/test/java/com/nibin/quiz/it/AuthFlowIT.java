@@ -16,13 +16,19 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /** A. Auth flow. */
 class AuthFlowIT extends AbstractPostgresIT {
 
     private static final String PROTECTED_ENDPOINT = "/student/attempt/does-not-matter";
+
+    private static final String NEW_QUESTION =
+            "{\"question_text\":\"2 + 2?\",\"options\":[\"3\",\"4\"],\"answer\":\"4\"}";
 
     @Value("${jwt.secret}")
     String jwtSecret;
@@ -86,6 +92,47 @@ class AuthFlowIT extends AbstractPostgresIT {
         // before dispatch, not a real admin handler.
         mockMvc.perform(get("/admin/anything").header(AUTHORIZATION, bearer(token)))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("validly signed token for a user that no longer exists returns 401")
+    void tokenForDeletedUserReturns401() throws Exception {
+        String token = Jwts.builder()
+                .subject("ghost")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + Duration.ofHours(1).toMillis()))
+                .signWith(signingKey())
+                .compact();
+
+        mockMvc.perform(get(PROTECTED_ENDPOINT).header(AUTHORIZATION, bearer(token)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("STUDENT cannot create or delete questions")
+    void studentCannotManageQuestions() throws Exception {
+        createUser("frank", "s3cret-password", Role.STUDENT);
+        String token = login("frank", "s3cret-password");
+
+        mockMvc.perform(post("/add").header(AUTHORIZATION, bearer(token))
+                        .contentType(APPLICATION_JSON).content(NEW_QUESTION))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(post("/addMany").header(AUTHORIZATION, bearer(token))
+                        .contentType(APPLICATION_JSON).content("[" + NEW_QUESTION + "]"))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(delete("/delete/{id}", 1).header(AUTHORIZATION, bearer(token)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("STAFF can create questions")
+    void staffCanCreateQuestions() throws Exception {
+        createUser("grace", "s3cret-password", Role.STAFF);
+        String token = login("grace", "s3cret-password");
+
+        mockMvc.perform(post("/add").header(AUTHORIZATION, bearer(token))
+                        .contentType(APPLICATION_JSON).content(NEW_QUESTION))
+                .andExpect(status().isOk());
     }
 
     private SecretKey signingKey() {

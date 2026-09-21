@@ -37,8 +37,10 @@ public class securityconfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/login", "/register","/error").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/question/add", "/question/addMany").hasAnyRole("ADMIN", "STAFF")
-                        .requestMatchers(HttpMethod.DELETE, "/question/delete/**").hasAnyRole("ADMIN", "STAFF")
+                        // QuizController has no class-level path (@RestController("/questin") only names the bean),
+                        // so these are its real mappings. The old /question/** matchers guarded nothing.
+                        .requestMatchers(HttpMethod.POST, "/add", "/addMany").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/delete/**").hasAnyRole("ADMIN", "STAFF")
                         .requestMatchers("/student/**", "/questions").hasAnyRole("STUDENT", "ADMIN")
                         .anyRequest().authenticated()
                 )
