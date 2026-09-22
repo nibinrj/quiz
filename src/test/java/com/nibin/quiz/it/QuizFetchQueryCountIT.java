@@ -31,8 +31,12 @@ class QuizFetchQueryCountIT extends AbstractPostgresIT {
     private static final int LARGE = 30;
     private static final int OPTIONS_PER_QUESTION = 4;
 
-    /** Selects the endpoint legitimately needs: user lookup (JWT), quiz, open attempt, questions+options. */
-    private static final int EXPECTED_SELECTS = 4;
+    /**
+     * Selects the endpoint needs, none of which depend on the question count:
+     * user (JwtFilter), user again (QuizAttemptService.startQuiz), quiz, open-attempt lookup,
+     * questions+options. The duplicate user lookup is a redundancy, not an N+1.
+     */
+    private static final int EXPECTED_SELECTS = 5;
 
     @Test
     @DisplayName("quiz-fetch statement count does not grow with the number of questions")
@@ -53,7 +57,7 @@ class QuizFetchQueryCountIT extends AbstractPostgresIT {
                 "select count grew from " + SMALL + " to " + LARGE + " questions ("
                         + smallSelects + " -> " + largeSelects + "): the N+1 is back");
 
-        // Absolute ceiling, so an across-the-board regression cannot hide behind equality.
+        // Absolute ceiling, so a constant-factor regression cannot hide behind equality.
         assertTrue(largeSelects <= EXPECTED_SELECTS,
                 "expected at most " + EXPECTED_SELECTS + " selects, got " + largeSelects);
     }

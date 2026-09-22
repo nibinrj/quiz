@@ -151,8 +151,19 @@ class AttemptLifecycleIT extends AbstractPostgresIT {
         assertEquals(expectedAnswerRows, answerRows);
     }
 
-    private static int questionId(JsonNode started, int index) {
-        return started.path("questions").get(index).path("questionId").asInt();
+    /**
+     * The id of the question seeded at {@code index}, found by its text. Deliberately not by
+     * position in the payload: the start endpoint does not order its questions, and
+     * PostgreSQL is free to return them in any order.
+     */
+    private int questionId(JsonNode started, int index) {
+        String text = quiz.getTitle() + " question " + index;
+        for (JsonNode question : started.path("questions")) {
+            if (text.equals(question.path("text").asText())) {
+                return question.path("questionId").asInt();
+            }
+        }
+        throw new AssertionError("start payload has no question with text '" + text + "'");
     }
 
     private static JsonNode answerFor(JsonNode result, int questionId) {
